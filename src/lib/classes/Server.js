@@ -14,7 +14,7 @@ class Server {
     };
 
     start() {
-        const routes = glob.sync("**/*.js", { cwd: `${process.cwd()}/routes` }).map(r => `../../back-end/routes/${r}`);
+        const routes = glob.sync("**/*.js", { cwd: `${process.cwd()}/routes` }).map(r => `../../routes/${r}`);
 
         this.app.use(...middlewares);
 
