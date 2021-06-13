@@ -1,0 +1,11 @@
+# NODE_MODULE'S
+node_modules
+#
+
+# ENV'S
+.env
+#
+
+# TEST'S
+*test.js
+#
