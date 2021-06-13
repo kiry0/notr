@@ -1,23 +1,27 @@
 {
-  "name": "svelte-app",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "start": "sirv public --no-clear"
+  "name": "tns-template-blank-svelte",
+  "displayName": "Blank Svelte",
+  "templateType": "App template",
+  "author": "David Pershouse (https://github.com/halfnelson)",
+  "version": "7.0.0",
+  "main": "app.js",
+  "description": "Blank template for Nativescript application using Svelte",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/halfnelson/svelte-native-template",
+  "dependencies": {
+    "@nativescript/core": "~7.0.0",
+    "@nativescript/theme": "~2.3.3",
+    "svelte-native": "~0.9.1",
+    "@nativescript/webpack": "3.0.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
-    "rollup": "^2.3.4",
-    "rollup-plugin-css-only": "^3.1.0",
-    "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-svelte": "^7.0.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "svelte": "^3.0.0"
+    "@nativescript/android": "7.0.0",
+    "svelte": "~3.24.1",
+    "svelte-loader-hot": "~0.3.1",
+    "svelte-native-preprocessor": "^0.2.0",
+    "svelte-preprocess": "^4.0.8",
+    "typescript": "~4.0.2"
   },
-  "dependencies": {
-    "sirv-cli": "^1.0.0"
-  }
+  "gitHead": "c06800e52ee1a184ea2dffd12a6702aaa43be4e3",
+  "readme": "NativeScript Application"
 }
