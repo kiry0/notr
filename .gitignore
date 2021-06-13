@@ -1,5 +1,6 @@
 node_modules
-public/build
+
+src/front-end/public/build
 
 .DS_Store
 
