@@ -1,11 +1,6 @@
-# NODE_MODULE'S
 node_modules
-#
+public/build
 
-# ENV'S
+.DS_Store
+
 .env
-#
-
-# TEST'S
-*test.js
-#
