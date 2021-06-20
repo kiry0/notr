@@ -1,0 +1,49 @@
+main {
+    height: 100vh;
+    width: 100vw;
+    background-color: #5246C4;
+}
+
+main > nav > ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+    list-style-type: none;
+}
+
+main > nav > ul > li {
+    margin-top: 2.5em;
+    color: white;
+}
+
+main > nav > ul > li:first-child {
+    margin: 0em .5em 0em 5em;
+}
+
+main > nav > ul > li:last-child {
+    margin: 0em 5em 0em .5em;
+}
+
+main > nav > ul > li:nth-child(3) {
+    flex: 1;
+}
+
+main > nav > ul > li > .button {
+    border: none;
+    background-color: #4236B8;
+}
+
+main > .container > h1, p {
+    color: white;
+    text-align: center;
+}
+
+main > .container > div {
+    display: flex;
+    justify-content: center;
+}
+
+main > .container > div > a > span > img {
+    margin: 0em .5em;
+}
