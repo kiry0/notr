@@ -18,15 +18,28 @@ main > nav > ul > li {
 }
 
 main > nav > ul > li:first-child {
-    margin: 0em .5em 0em 5em;
+    margin: 0em 1em 0em 5em;
+}
+
+main > nav > ul > li > a > span > img {
+    width: 2.5em;
 }
 
 main > nav > ul > li:last-child {
-    margin: 0em 5em 0em .5em;
+    margin: 0em 5em 0em 1em;
 }
 
 main > nav > ul > li:nth-child(3) {
     flex: 1;
+}
+
+main > nav > ul > li:nth-child(2) {
+    font-weight: 600;
+    font-size: 1.25em;
+}
+
+main > nav > ul > li:nth-child(2) > a {
+    color: white;
 }
 
 main > nav > ul > li > .button {
