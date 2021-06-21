@@ -47,16 +47,15 @@ main > nav > ul > li > .button {
     background-color: #4236B8;
 }
 
+main > .container {
+    margin-top: 7.5em;
+}
+
 main > .container > h1, p {
     color: white;
-    text-align: center;
+    text-align: left;
 }
 
-main > .container > div {
-    display: flex;
-    justify-content: center;
-}
-
-main > .container > div > a > span > img {
-    margin: 0em .5em;
+body > main > div > div > a > span > img {
+    margin-top: -20px;
 }
