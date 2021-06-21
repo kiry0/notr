@@ -48,14 +48,25 @@ main > nav > ul > li > .button {
 }
 
 main > .container {
-    margin-top: 7.5em;
+    margin-top: 8em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 
-main > .container > h1, p {
+main > .container > div > h1, p {
     color: white;
     text-align: left;
 }
 
-body > main > div > div > a > span > img {
-    margin-top: -20px;
+body > main > div > div > div > a > span > img {
+    margin-top: -1.75em;
+}
+
+body > main > div > div > span > img {
+    margin-top: -5.5em;
+}
+
+.container > div:nth-child(1) {
+    margin-right: 2.5em;
 }
