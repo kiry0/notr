@@ -17,14 +17,15 @@ class Server {
         const routes = glob.sync("**/*.js", { cwd: `${process.cwd()}/routes` }).map(r => `../../routes/${r}`);
 
         this.app.use(...middlewares);
-
-        this.app.use(require(...routes));
+        
+        this.app.use(...routes.map((route) => require(route)));
 
         const mongodbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@dev.yt6e2.mongodb.net/Notr`;
 
         mongoose.connect(mongodbURI, {
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
+            useCreateIndex: true
         }, (err) => {
             console.log('Attempting to connect to MongoDB.....');
 
