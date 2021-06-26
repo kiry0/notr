@@ -38,7 +38,7 @@ class Server {
             try {
                 console.log('Attempting to start the server.....');
                 
-                this.app.listen(process.env.PORT);
+                this.app.listen(process.env.SERVER_PORT);
         
                 console.log('Successfully started the server!');
             } catch (err) {
