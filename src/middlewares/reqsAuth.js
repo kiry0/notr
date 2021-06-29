@@ -4,7 +4,7 @@ const redis_client = require('../redis-client.js');
     const User = require('../models/User.js');
     /* */
     /* UTILS: */
-    const msToMins = require('../utils/msToMins.js');
+    const msToSecs = require('../utils/msToSecs.js');
     /* */
 /* */
 
@@ -40,15 +40,18 @@ module.exports = async (req, res, next) => {
         };
 
         user = JSON.parse(u);
+        
+        // console.log(`TS:${msToSecs(Date.now() - user.timestamp)} | TC:${user.tokenCount}`);
+        
+        // // Check's if the time difference has been >= 1hr.
+        if(msToSecs(Date.now() - user.timestamp) >= 1) user.tokenCount = 2;
 
         // Check's if the user has enough tokens.
         if(user.tokenCount <= 0) return res.sendStatus(429);
 
-        // // Check's if the time difference has been >= 1hr.
-        if(msToMins(Date.now() - user.timestamp) >= 60) user.tokenCount = 3600;
-
         user.tokenCount--;
-        
+        user.timestamp = Date.now();
+
         redis_client.set(id, JSON.stringify(user));
 
         redis_client.expire(id, 60 * 60);
