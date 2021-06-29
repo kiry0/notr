@@ -16,25 +16,20 @@ module.exports = async (req, res, next) => {
     const doesTokenExist = await User.findOne({ token }) ? true : false;
 
     if(!doesTokenExist) return res.sendStatus(401);
-
-    const { email, username, id } = await User.findOne({ token });
     
-    redis_client.get(id, (err, u) => {
+    redis_client.get(token, (err, u) => {
         if(err) return console.error(err);
 
         if(!u) {
             const timestamp = Date.now();
             const tokenCount = 3600;
             const user = {
-                id,
-                email,
-                username,
                 token,
                 timestamp,
                 tokenCount
             };
 
-            redis_client.set(id, JSON.stringify(user));
+            redis_client.set(token, JSON.stringify(user));
 
             u = JSON.stringify(user);
         };
@@ -52,11 +47,11 @@ module.exports = async (req, res, next) => {
         user.tokenCount--;
         user.timestamp = Date.now();
 
-        redis_client.set(id, JSON.stringify(user));
+        redis_client.set(token, JSON.stringify(user));
 
-        redis_client.expire(id, 60 * 60);
+        redis_client.expire(token, 60 * 60);
 
-        // redis_client.get(id, (err, d) => {
+        // redis_client.get(token, (err, d) => {
         //     console.log(JSON.parse(d).tokenCount);
         // });
 
