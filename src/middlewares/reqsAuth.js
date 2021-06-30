@@ -1,5 +1,5 @@
 /* DEPENDENCIES: */
-const redis_client = require('../redis-client.js');
+const redis_client = require('../lib/variables/redis-client.js');
     /* MODELS: */
     const User = require('../models/User.js');
     /* */
