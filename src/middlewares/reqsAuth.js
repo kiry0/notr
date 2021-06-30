@@ -1,5 +1,5 @@
 /* DEPENDENCIES: */
-const redis_client = require('../lib/variables/redis-client.js');
+const redisClient = require('../lib/variables/redisClient.js');
     /* MODELS: */
     const User = require('../models/User.js');
     /* */
@@ -17,7 +17,7 @@ module.exports = async (req, res, next) => {
 
     if(!doesTokenExist) return res.sendStatus(401);
     
-    redis_client.get(token, (err, u) => {
+    redisClient.get(token, (err, u) => {
         if(err) return console.error(err);
 
         if(!u) {
@@ -28,7 +28,7 @@ module.exports = async (req, res, next) => {
                 tokenCount
             };
 
-            redis_client.set(token, JSON.stringify(user));
+            redisClient.set(token, JSON.stringify(user));
 
             u = JSON.stringify(user);
         };
@@ -46,9 +46,9 @@ module.exports = async (req, res, next) => {
         user.tokenCount--;
         user.timestamp = Date.now();
 
-        redis_client.set(token, JSON.stringify(user));
+        redisClient.set(token, JSON.stringify(user));
 
-        redis_client.expire(token, 60 * 60);
+        redisClient.expire(token, 60 * 60);
 
         // redis_client.get(token, (err, d) => {
         //     console.log(JSON.parse(d).tokenCount);
