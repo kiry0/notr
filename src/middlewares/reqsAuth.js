@@ -22,9 +22,8 @@ module.exports = async (req, res, next) => {
 
         if(!u) {
             const timestamp = Date.now();
-            const tokenCount = 3600;
+            const tokenCount = 2;
             const user = {
-                token,
                 timestamp,
                 tokenCount
             };
