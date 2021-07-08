@@ -60,7 +60,7 @@ axios.post('/api/v1/auth/log-in', {
 .catch(err => console.error(err));
 ```
 ## Note
-- As of (7/8/21), you have to provide both email & username when logging in.
+- You can log in with either email/password provided, or both.
 
 # Log-out
 Log's a user out.
