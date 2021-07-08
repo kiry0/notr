@@ -41,7 +41,7 @@ Log's a user in.
 ## Error responses
 - **Code** : `400 Bad Request` - If one of the ff: email, username, password are falsy.
 - **Code** : `404 Not Found` - If no user is associated with the ff: email, username. 
-- **Code** : `401 Unauthorized` - If the password for the provided email address is incorrect.
+- **Code** : `401 Unauthorized` - If the password provided for the given email address is incorrect.
 
 ## Returns
 - **Cookie** : `token` - An access token issued to the user.
