@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { v4: uuidv4 } = require('uuid');
     /* MODELS: */
     const User = require('../../models/User.js');
     /* */
@@ -20,14 +19,12 @@ router.post('/api/v1/auth/register', async (req, res) => {
 
     if(!user) {
         const password = hashedPassword;
-        const id = uuidv4();
         const token = crypto.randomBytes(128).toString('hex');
 
         const user = new User({
             email,
             username,
             password,
-            id,
             token
         });
 
@@ -70,9 +67,11 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
 });
 
 router.delete('/api/v1/auth/log-out', (req, res) => {
-    if(!req.session.isLoggedIn) return res.sendStatus(404);
+    if(!req.session.isLoggedIn && !req.cookies.token) return res.sendStatus(404);
 
-    req.session.destroy();
+    if(req.session.isLoggedIn) req.session.destroy();
+
+    if(req.cookies.token) return res.clearCookie('token'); 
 
     res.sendStatus(200);
 });
