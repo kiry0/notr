@@ -4,7 +4,11 @@ const mongoose = require('mongoose');
 const express = require('express');
 const glob = require('glob');
     /* MIDDLEWARE: */
-    const middlewares = [require('express').json(), require('cors')()];
+    const middlewares = [
+        require('express').json(),
+        require('cors')(),
+        require('cookie-parser')()
+    ];
     /* */
 /* */
 
@@ -38,7 +42,7 @@ class Server {
             try {
                 console.log('Attempting to start the server.....');
                 
-                this.app.listen(process.env.SERVER_PORT);
+                this.app.listen(process.env.EXPRESS_PORT);
         
                 console.log('Successfully started the server!');
             } catch (err) {

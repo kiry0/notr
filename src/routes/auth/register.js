@@ -19,17 +19,24 @@ router.post('/api/v1/auth/register', async (req, res) => {
     const user = await User.findOne({ username });
 
     if(!user) {
+        const password = hashedPassword;
+        const id = uuidv4();
+        const token = crypto.randomBytes(128).toString('hex');
+
         const user = new User({
             email,
             username,
-            password: hashedPassword,
-            id: uuidv4(),
-            token: crypto.randomBytes(128).toString('hex')
+            password,
+            id,
+            token
         });
 
         user.save();
         
-        return res.sendStatus(201);
+        return res.cookie('token', token, {
+            httpOnly: true,
+            secure: true
+        }).sendStatus(201);
     };
 
     res.sendStatus(409);

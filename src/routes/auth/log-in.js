@@ -18,7 +18,12 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
 
     if(!await bcrypt.compare(password, user[0].password)) return res.sendStatus(401);
 
-    res.sendStatus(200);
+    const { token } = user[0];
+    
+    return res.cookie('token', token, {
+        httpOnly: true,
+        secure: true
+    }).sendStatus(200);
 });
 
 module.exports = router;
