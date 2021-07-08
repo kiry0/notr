@@ -1,7 +1,7 @@
 /* DEPENDENCIES: */
     /* ROUTES */
-    const auth = require('./routes/auth.js'),
-          notr = require('./routes/notr.js');
+    const auth = require('../routes/auth.js'),
+          notr = require('../routes/notr.js');
     /* */
 /* */
 

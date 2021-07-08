@@ -10,9 +10,9 @@ class Server {
     };
 
     start() {
-        require('../../middlewares.js')(this.app);
+        require('../../config/middlewares.js')(this.app);
         
-        require('../../routes.js')(this.app);
+        require('../../config/routes.js')(this.app);
 
         const mongodbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@dev.yt6e2.mongodb.net/Notr`;
 
