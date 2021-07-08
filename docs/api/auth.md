@@ -68,10 +68,10 @@ Log's a user out.
 - **URL** : `/api/v1/auth/log-out`
 
 ## Success response
-- **Code** : `200 OK``- Successfully logged out.
+- **Code** : `200 OK`- Successfully logged out.
 
 ## Error response
-- **Code** : `404 Not Found` - When a user try's to log out even if they're not logged in to begin with.
+- **Code** : `404 Not Found` - When a user tries to log out even if they're not logged in to begin with.
 
 ## Example
 ```js
