@@ -9,6 +9,7 @@ const glob = require('glob');
         require('cors')(),
         require('cookie-parser')()
     ];
+    const session = require('express-session');
     /* */
 /* */
 
@@ -20,7 +21,12 @@ class Server {
     start() {
         const routes = glob.sync("**/*.js", { cwd: `${process.cwd()}/routes` }).map(r => `../../routes/${r}`);
 
-        this.app.use(...middlewares);
+        this.app.use(...middlewares)
+            .use(session({
+                secret: process.env.SESSION_SECRET,
+                resave: true,
+                saveUninitialized: true
+            }));
         
         this.app.use(...routes.map((route) => require(route)));
 
