@@ -2,20 +2,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const express = require('express');
-const glob = require('glob');
-    /* MIDDLEWARE: */
-    const middlewares = [
-        require('express').json(),
-        require('cors')(),
-        require('cookie-parser')(),
-        require('express-session')({
-            secret: process.env.SESSION_SECRET,
-            resave: true,
-            saveUninitialized: true,
-            cookie: { secure: true }
-        })
-    ];
-    /* */
 /* */
 
 class Server {
@@ -24,11 +10,9 @@ class Server {
     };
 
     start() {
-        const routes = glob.sync("**/*.js", { cwd: `${process.cwd()}/routes` }).map(r => `../../routes/${r}`);
-
-        this.app.use(...middlewares);
+        require('../../middlewares.js')(this.app);
         
-        this.app.use(...routes.map((route) => require(route)));
+        require('../../routes.js')(this.app);
 
         const mongodbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@dev.yt6e2.mongodb.net/Notr`;
 

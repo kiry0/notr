@@ -4,7 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
     /* MODELS: */
-    const User = require('../../models/User.js');
+    const User = require('../models/User.js');
     /* */
 /* */
 
@@ -53,8 +53,8 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
     
     const user = await User.find({ $or:[{ email }, { username }]});
         
-    if(!user) return res.sendStatus(404);
-
+    if(user.length <= 0) return res.sendStatus(404);
+    
     if(!await bcrypt.compare(password, user[0].password)) return res.sendStatus(401);
 
     const { token } = user[0];
