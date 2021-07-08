@@ -9,7 +9,7 @@ const redisClient = require('../lib/variables/redisClient.js');
 /* */
 
 module.exports = async (req, res, next) => {
-    const token = req.headers.authorization;
+    const token = req.headers.authorization || req.session.token;
 
     if(!token) return res.sendStatus(400);
 

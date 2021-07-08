@@ -25,7 +25,8 @@ class Server {
             .use(session({
                 secret: process.env.SESSION_SECRET,
                 resave: true,
-                saveUninitialized: true
+                saveUninitialized: true,
+                cookie: { secure: true }
             }));
         
         this.app.use(...routes.map((route) => require(route)));

@@ -21,7 +21,8 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
     const { token } = user[0];
 
     req.session.isLoggedIn = true;
-    
+    req.session.token = token;
+
     return res.cookie('token', token, {
         httpOnly: true,
         secure: true

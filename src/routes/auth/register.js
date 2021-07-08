@@ -33,8 +33,11 @@ router.post('/api/v1/auth/register', async (req, res) => {
 
         user.save();
         
+        /* TODO: */
+        // Redirect to the `log-in` route before assigning isLoggedIn to true.
         req.session.isLoggedIn = true;
-        
+        req.session.token = token;
+
         return res.cookie('token', token, {
             httpOnly: true,
             secure: true
