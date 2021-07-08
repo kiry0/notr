@@ -47,7 +47,10 @@ router.post('/api/v1/auth/register', async (req, res) => {
 router.post('/api/v1/auth/log-in', async (req, res) => {
     const { email, username, password } = req.body;
 
-    if(!email || !username || !password) return res.sendStatus(400);
+    
+    if(!email && !username) return res.sendStatus(400);
+
+    if(!password) return res.sendStatus(400);
     
     const user = await User.find({ $or:[{ email }, { username }]});
         
