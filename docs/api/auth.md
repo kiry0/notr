@@ -1,19 +1,19 @@
 ― Auth
 # Register
 Register's a user.
-**Method** : `POST`
-**URL** : `/api/v1/auth/register`
-**Params** : `{ *email, *username, *password }`
+- **Method** : `POST`
+- **URL** : `/api/v1/auth/register`
+- **Params** : `{ *email, *username, *password }`
 
 ## Success response
-**Code**: `201 Created` - Successfully registered.
+- **Code**: `201 Created` - Successfully registered.
 
 ## Error responses
-**Code** : `400 Bad Request` - If one of the ff: email, username, password are falsy.
-**Code** : `409 Conflict` - If one of the ff: email, username are already taken.
+- **Code** : `400 Bad Request` - If one of the ff: email, username, password are falsy.
+- **Code** : `409 Conflict` - If one of the ff: email, username are already taken.
 
 ## Returns 
-**Cookie** : `token` - An access token issued to the user.
+- **Cookie** : `token` - An access token issued to the user.
 
 ## Example
 ```js
@@ -31,20 +31,20 @@ axios.post('/api/v1/auth/register', {
 
 # Log-in
 Log's a user in.
-**Method** : `POST`
-**URL** : `/api/v1/auth/log-in`
-**Params** : `{ *email, *username, *password }`
+- **Method** : `POST`
+- **URL** : `/api/v1/auth/log-in`
+- **Params** : `{ *email, *username, *password }`
 
 ## Success response
-**Code**: `200 OK` - Successfully logged in.
+- **Code**: `200 OK` - Successfully logged in.
 
 ## Error responses
-**Code** : `400 Bad Request` - If one of the ff: email, username, password are falsy.
-**Code** : `404 Not Found` - If no user is associated with the ff: email, username. 
-**Code** : `401 Unauthorized` - If the password for the provided email address is incorrect.
+- **Code** : `400 Bad Request` - If one of the ff: email, username, password are falsy.
+- **Code** : `404 Not Found` - If no user is associated with the ff: email, username. 
+- **Code** : `401 Unauthorized` - If the password for the provided email address is incorrect.
 
 ## Returns
-**Cookie** : `token` - An access token issued to the user.
+- **Cookie** : `token` - An access token issued to the user.
 
 ## Example
 ```js
@@ -64,14 +64,14 @@ axios.post('/api/v1/auth/log-in', {
 
 # Log-out
 Log's a user out.
-**Method** : `DELETE`
-**URL** : `/api/v1/auth/log-out`
+- **Method** : `DELETE`
+- **URL** : `/api/v1/auth/log-out`
 
 ## Success response
-**Code** : `200 OK``- Successfully logged out.
+- **Code** : `200 OK``- Successfully logged out.
 
 ## Error response
-**Code** : `404 Not Found` - When a user try's to log out even if they're not logged in to begin with.
+- **Code** : `404 Not Found` - When a user try's to log out even if they're not logged in to begin with.
 
 ## Example
 ```js
