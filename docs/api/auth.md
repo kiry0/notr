@@ -60,7 +60,7 @@ axios.post('/api/v1/auth/log-in', {
 .catch(err => console.error(err));
 ```
 ## Note
-- You can log in with either email/password provided, or both.
+You can log in with either email/password provided, or both.
 
 # Log-out
 Log's a user out.
