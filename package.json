@@ -17,8 +17,6 @@
     "express": "^4.17.1",
     "express-rate-limit": "^5.2.6",
     "express-session": "^1.17.2",
-    "flat": "^5.0.2",
-    "glob": "^7.1.7",
     "milligram": "^1.4.1",
     "mongoose": "^5.12.13",
     "redis": "^3.1.2",
