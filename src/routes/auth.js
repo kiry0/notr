@@ -3,13 +3,30 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const RedisStore = require('express-brute-redis');
     /* MODELS: */
     // eslint-disable-next-line indent
     const User = require('../models/User.js');
     /* */
+    /* MIDDLEWARES */
+    const ExpressBrute = require('express-brute');
+    /* */
+    /* GLOBAL VARIABLES */
+    const store = new RedisStore({
+        host: process.env.REDIS_STORE_HOST,
+        post: process.env.REDIS_STORE_PORT
+    });
+    const bruteforce = new ExpressBrute(store, {
+        freeRetries: 10,
+        minWait: 1*60*1000,
+        maxWait: 60*60*1000,
+    });
+    /* */
 /* */
 
 router.post('/api/v1/auth/register', async (req, res) => {
+    bruteforce.prevent;
+
     const { email, username, password } = req.body;
     
     if(!email || !username || !password) return res.sendStatus(400);
@@ -46,6 +63,8 @@ router.post('/api/v1/auth/register', async (req, res) => {
 });
 
 router.post('/api/v1/auth/log-in', async (req, res) => {
+    bruteforce.prevent;
+
     const { email, username, password } = req.body;
 
     if(!email && !username) return res.sendStatus(400);
@@ -70,6 +89,8 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
 });
 
 router.delete('/api/v1/auth/log-out', (req, res) => {
+    bruteforce.prevent;
+
     if(!req.session.isLoggedIn && !req.cookies.token) return res.sendStatus(404);
 
     if(req.session.isLoggedIn) req.session.destroy();

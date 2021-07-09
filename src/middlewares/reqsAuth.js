@@ -37,7 +37,7 @@ module.exports = async (req, res, next) => {
         
         // console.log(`TS:${msToSecs(Date.now() - user.timestamp)} | TC:${user.tokenCount}`);
         
-        // // Check's if the time difference has been >= 1hr.
+        // // Check's if the time difference has been >= 1sec/secs.
         if(msToSecs(Date.now() - user.timestamp) >= 1) user.tokenCount = 2;
 
         // Check's if the user has enough tokens.
