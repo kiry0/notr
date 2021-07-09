@@ -1,6 +1,6 @@
+/* eslint-disable indent */
 /* DEPENDENCIES: */
 require('dotenv').config();
-const express = require('express');
     /* MIDDLEWARES */
     const json = require('express').json,
           cors = require('cors'),

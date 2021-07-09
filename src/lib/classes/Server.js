@@ -37,6 +37,7 @@ class Server {
                 console.log('Successfully started the server!');
             } catch (err) {
                 throw new Error(`An error has occured, unable to start the server! => ${err}`);        
+            // eslint-disable-next-line no-extra-semi
             };
         }); 
     };  

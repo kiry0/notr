@@ -2,10 +2,10 @@
 const express = require('express');
 const router = express.Router();
     /* MIDDLEWARES: */
-    const reqsAuth = require('../middlewares/reqsAuth.js');
+    // const reqsAuth = require('../middlewares/reqsAuth.js');
     /* */
     /* MODELS: */
-    const Notr = require('../models/Notr.js');
+    // const Notr = require('../models/Notr.js');
     const User = require('../models/User.js');
     /* */
 /* */
