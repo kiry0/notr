@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
         unique: true
     },
     notrs: {
-        type: Array
+        type: Map
     }
 });
 
