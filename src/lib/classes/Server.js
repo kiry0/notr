@@ -21,6 +21,7 @@ class Server {
         mongoose.connect(mongodbURI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            useFindAndModify: false,
             useCreateIndex: true
         }, (err) => {
             console.log('Attempting to connect to MongoDB.....');
