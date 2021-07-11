@@ -1,4 +1,4 @@
-― Auth
+― Route
 # Register
 Register's a user.
 - **Method** : `POST`
