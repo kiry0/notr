@@ -5,20 +5,15 @@ const express = require('express');
 /* */
 
 class Server {
-    constructor() {
+    constructor({
+        mongodbURI,
+    }) {
         this.app = express();
+        this.mongodbURI = mongodbURI;
     };
 
     start() {
-        /* Registers middlewares. */
-        require('../../config/middlewares.js')(this.app);
-        
-        /* Registers routes. */
-        require('../../config/routes.js')(this.app);
-
-        const mongodbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@dev.yt6e2.mongodb.net/Notr`;
-
-        mongoose.connect(mongodbURI, {
+        mongoose.connect(this.mongodbURI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useFindAndModify: false,
@@ -35,6 +30,12 @@ class Server {
             try {
                 console.log('Attempting to start the server.....');
                 
+                /* Registers middlewares. */
+                require('../../config/middlewares.js')(this.app);
+        
+                /* Registers routes. */
+                require('../../config/routes.js')(this.app);
+
                 this.app.listen(process.env.EXPRESS_SERVER_PORT);
         
                 console.log('Successfully started the server!');
