@@ -45,6 +45,10 @@ class Server {
             };
         }); 
     };  
+
+    stop() {
+        process.exit();
+    };
 };
 
 module.exports = Server;
