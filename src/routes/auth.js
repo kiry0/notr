@@ -38,12 +38,13 @@ router.post('/api/v1/auth/register', async (req, res) => {
     if(!user) {
         const password = hashedPassword;
         const token = crypto.randomBytes(128).toString('hex');
-
+        const permissionLevel = 1;
         const user = new User({
             email,
             username,
             password,
-            token
+            token,
+            permissionLevel
         });
 
         user.save();
@@ -95,7 +96,7 @@ router.delete('/api/v1/auth/log-out', (req, res) => {
 
     if(req.session.isLoggedIn) req.session.destroy();
 
-    if(req.cookies.token) return res.clearCookie('token'); 
+    if(req.cookies.token) res.clearCookie('token'); 
 
     res.sendStatus(200);
 });

@@ -22,6 +22,10 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    permissionLevel: {
+        type: Number,
+        required: true
+    },
     notrs: {
         type: Map
     }
