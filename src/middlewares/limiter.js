@@ -14,27 +14,27 @@ module.exports = ({
     message = 'Too many requests, please try again later.',
     statusCode = 429,
     setHeader = true,
-    permissionLevelRequiredToBypass = 5
-}) => {
+    requiredPermissionLevelToBypass = 5
+} = {}) => {
     if(!tokens || tokens.toString().trim().length === 0) throw new TypeError('tokens cannot be null, undefined or empty!');
 
     if(!interval || interval.toString().trim().length === 0) throw new TypeError('interval cannot be null, undefined or empty!');
     
     return async(req, res, next) => {
-        const token = req.headers.authorization || req.session.token;
-        const user = await User.findOne({ token });
+        const token = req.headers.authorization || req.session.token,
+              user = await User.findOne({ token });
 
-        if(user.permissionLevel >= permissionLevelRequiredToBypass) return next();
+        if(user.permissionLevel >= requiredPermissionLevelToBypass) return next();
 
         redisClient.get(token, (err, u) => {
             if(err) return console.error(err);
     
             if(!u) {
-                const timestamp = Date.now();
-                const user = {
-                    timestamp,
-                    tokens
-                };
+                const timestamp = Date.now(),
+                      user = {
+                        timestamp,
+                        tokens
+                      };
     
                 u = JSON.stringify(user);
 

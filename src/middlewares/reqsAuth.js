@@ -3,17 +3,16 @@
     const User = require('../models/User.js');
     /* */
 /* */
-// Note: Add permission level. 
 module.exports = ({
-    requiredPermissionLevel
-} = { requiredPermissionLevel: 1 }) => {
+    requiredPermissionLevel = 1
+} = {}) => {
     return async (req, res, next) => {
         const token = req.headers.authorization || req.session.token;
 
         if(!token) return res.sendStatus(400);
     
-        const user = await User.findOne({ token });
-        const doesTokenExist = user.token ? true : false;
+        const user = await User.findOne({ token }),
+              doesTokenExist = user.token ? true : false;
     
         if(!doesTokenExist) return res.sendStatus(404);
         

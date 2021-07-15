@@ -21,9 +21,7 @@ class Server {
         }, (err) => {
             console.log('Attempting to connect to MongoDB.....');
 
-            if(err) {
-                throw new Error(`An error has occured, unable to connect to MongoDB! => ${err}`);
-            };
+            if(err) throw new Error(`An error has occured, unable to connect to MongoDB! => ${err}`);
 
             console.log('Successfully connected to MongoDB!');
 

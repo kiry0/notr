@@ -1,25 +1,26 @@
 /* DEPENDENCIES: */
-const express = require('express');
-const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
+const express = require('express'),
+      router = express.Router(),
+      { v4: uuidv4 } = require('uuid');
     /* MIDDLEWARES: */
-    const reqsAuth = require('../middlewares/reqsAuth.js');
+    const reqsAuth = require('../middlewares/reqsAuth.js'),
+          limiter = require('../middlewares/limiter.js');
     /* */
     /* MODELS: */
-    const Notr = require('../models/Notr.js');
-    const User = require('../models/User.js');
+    const Notr = require('../models/Notr.js'),
+          User = require('../models/User.js');
     /* */
 /* */
 
-/* Create's a notr. */
-router.post('/api/v1/notr', reqsAuth, async (req, res) => {
-    const token = req.headers.authorization || req.session.token;
-    const { title, content } = req.body;
-    const id = uuidv4();
-    const notr = {
-        title,
-        content
-    };
+/* Creates a notr. */
+router.post('/api/v1/notr', [reqsAuth(), limiter({ tokens: 2, interval: 10 })], async (req, res) => {
+    const token = req.headers.authorization || req.session.token,
+          { title, content } = req.body,
+          id = uuidv4(),
+          notr = {
+            title,
+            content
+          };
 
     Notr.create({
         id,
@@ -42,7 +43,8 @@ router.post('/api/v1/notr', reqsAuth, async (req, res) => {
 /* */
 
 /* List a user's notr. */
-router.get('/api/v1/user/:_id/notr/:id', reqsAuth, async (req, res) => {
+// Add extra security.
+router.get('/api/v1/user/:_id/notr/:id', [reqsAuth(), limiter({ tokens: 2, interval: 10 })], async (req, res) => {
     const { _id, id } = req.params;
 
     User.findById({ _id }, (err, user) => {
@@ -60,7 +62,8 @@ router.get('/api/v1/user/:_id/notr/:id', reqsAuth, async (req, res) => {
 /* */
 
 /* List a user's notrs. */
-router.get('/api/v1/user/:_id/notrs', reqsAuth, async (req, res) => {
+// Add extra security.
+router.get('/api/v1/user/:_id/notrs', [reqsAuth(), limiter({ tokens: 2, interval: 10 })], async (req, res) => {
     const { _id } = req.params;
     
     if(!_id) return res.sendStatus(400);
@@ -78,10 +81,10 @@ router.get('/api/v1/user/:_id/notrs', reqsAuth, async (req, res) => {
 /* */
 
 /* Updates a user's notr. */
-router.patch('/api/v1/user/:_id/notr/:id', reqsAuth, async(req, res) => {
-    const { _id, id } = req.params;
-    const notr = (await User.findById({_id})).notrs.get(id);
-    const { title, content } = req.body || notr;
+router.patch('/api/v1/user/:_id/notr/:id', [reqsAuth(), limiter({ tokens: 2, interval: 10 })], async(req, res) => {
+    const { _id, id } = req.params,
+          notr = (await User.findById({_id})).notrs.get(id),
+          { title, content } = req.body || notr;
     
     User.findByIdAndUpdate({ _id }, {
         $set: {[`notrs.${id}`]: { title, content }, }
@@ -98,10 +101,10 @@ router.patch('/api/v1/user/:_id/notr/:id', reqsAuth, async(req, res) => {
     });
 });
 
-router.put('/api/v1/user/:_id/notr/:id', reqsAuth, async(req, res) => {
-    const { _id, id } = req.params;
-    const notr = (await User.findById({_id})).notrs.get(id);
-    const { title, content } = req.body || notr;
+router.put('/api/v1/user/:_id/notr/:id', [reqsAuth(), limiter({ tokens: 2, interval: 10 })], async(req, res) => {
+    const { _id, id } = req.params,
+          notr = (await User.findById({_id})).notrs.get(id),
+        { title, content } = req.body || notr;
 
     User.findByIdAndUpdate({ _id }, {
         $set: {[`notrs.${id}`]: { title, content }, }
@@ -140,7 +143,7 @@ router.put('/api/v1/user/:_id/notr/:id', reqsAuth, async(req, res) => {
 /* */
 
 /* Deletes a user's notr. */
-router.delete('/api/v1/user/:_id/notr/:id', reqsAuth, async(req, res) => {
+router.delete('/api/v1/user/:_id/notr/:id', [reqsAuth(), limiter({ tokens: 2, interval: 10 })], async(req, res) => {
     const { _id, id } = req.params;
 
     if(!_id) return res.sendStatus(400);

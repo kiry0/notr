@@ -1,9 +1,9 @@
 /* DEPENDENCIES: */
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-const RedisStore = require('express-brute-redis');
+const express = require('express'),
+      router = express.Router(),
+      bcrypt = require('bcrypt'),
+      crypto = require('crypto'),
+      RedisStore = require('express-brute-redis');
     /* MODELS: */
     // eslint-disable-next-line indent
     const User = require('../models/User.js');
@@ -15,8 +15,8 @@ const RedisStore = require('express-brute-redis');
     const store = new RedisStore({
         host: process.env.REDIS_STORE_HOST,
         post: process.env.REDIS_STORE_PORT
-    });
-    const bruteforce = new ExpressBrute(store, {
+    }),
+    bruteforce = new ExpressBrute(store, {
         freeRetries: 10,
         minWait: 1*60*1000,
         maxWait: 60*60*1000,
@@ -31,21 +31,20 @@ router.post('/api/v1/auth/register', async (req, res) => {
     
     if(!email || !username || !password) return res.sendStatus(400);
 
-    const hashedPassword = await bcrypt.hash(password, 16);
-    
-    const user = await User.findOne({ username });
+    const hashedPassword = await bcrypt.hash(password, 16),
+          user = await User.findOne({ username });
 
     if(!user) {
-        const password = hashedPassword;
-        const token = crypto.randomBytes(128).toString('hex');
-        const permissionLevel = 1;
-        const user = new User({
-            email,
-            username,
-            password,
-            token,
-            permissionLevel
-        });
+        const password = hashedPassword,
+              token = crypto.randomBytes(128).toString('hex'),
+              permissionLevel = 1,
+              user = new User({
+                email,
+                username,
+                password,
+                token,
+                permissionLevel
+              });
 
         user.save();
         
