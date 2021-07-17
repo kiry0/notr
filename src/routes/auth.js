@@ -8,6 +8,9 @@ const express = require('express'),
     // eslint-disable-next-line indent
     const User = require('../models/User.js');
     /* */
+    /* SCHEMAS: */
+    const { registrationSchema, logInSchema } = require('../schemas/auth.js');
+    /* */
     /* MIDDLEWARES */
     const ExpressBrute = require('express-brute');
     /* */
@@ -24,80 +27,98 @@ const express = require('express'),
     /* */
 /* */
 
+// TODO #1: replace ip-based rate limitting dependencies. 
 router.post('/api/v1/auth/register', async (req, res) => {
     bruteforce.prevent;
 
-    const { email, username, password } = req.body;
-    
-    if(!email || !username || !password) return res.sendStatus(400);
+    try {
+        await registrationSchema.validateAsync(req.body);
 
-    const hashedPassword = await bcrypt.hash(password, 16),
-          user = await User.findOne({ username });
+        const { email, username, password } = req.body,
+        hashedPassword = await bcrypt.hash(password, 16),
+        doesUserExist = (await User.findOne({ $or:[{ email }, { username }]}))[0];
 
-    if(!user) {
-        const password = hashedPassword,
-              token = crypto.randomBytes(128).toString('hex'),
-              permissionLevel = 1,
-              user = new User({
-                email,
-                username,
-                password,
-                token,
-                permissionLevel
-              });
+        if(doesUserExist) return res.sendStatus(409);
 
-        user.save();
+        const token = crypto.randomBytes(128).toString('hex'),
+              permissionLevel = 1;
         
-        /* TODO: */
-        // Redirect to the `log-in` route before assigning isLoggedIn to true.
+        new User({
+            email,
+            username,
+            password: hashedPassword,
+            token,
+            permissionLevel
+        }).save();
+
         req.session.isLoggedIn = true;
         req.session.token = token;
 
-        return res.cookie('token', token, {
+        res.cookie('token', token, {
             httpOnly: true,
             secure: true
-        }).sendStatus(201);
-    };
+        });
+        
+        res.redirect('/', 201);
+    } catch(error) {
+        if(error.isJoi === true) res.sendStatus(422);
 
-    res.sendStatus(409);
+        res.sendStatus(500);
+    };
 });
 
 router.post('/api/v1/auth/log-in', async (req, res) => {
     bruteforce.prevent;
 
-    const { email, username, password } = req.body;
+    try {
+        await logInSchema.validateAsync(req.body);
 
-    if(!email && !username) return res.sendStatus(400);
+        const { email, username, password } = req.body;
 
-    if(!password) return res.sendStatus(400);
-    
-    const user = await User.find({ $or:[{ email }, { username }]});
+        const user = (await User.find({ $or:[{ email }, { username }]}))[0];
+
+        if(!user) return res.sendStatus(404);
+
+        const doesPasswordMatch = await bcrypt.compare(password, user.password) ? true : false;
         
-    if(user.length <= 0) return res.sendStatus(404);
-    
-    if(!await bcrypt.compare(password, user[0].password)) return res.sendStatus(401);
+        if(!doesPasswordMatch) return res.sendStatus(401);    
 
-    const { token } = user[0];
+        const { token } = user;
 
-    req.session.isLoggedIn = true;
-    req.session.token = token;
+        req.session.isLoggedIn = true;
+        req.session.token = token;
 
-    return res.cookie('token', token, {
-        httpOnly: true,
-        secure: true
-    }).sendStatus(200);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true
+        });
+
+        res.redirect('/', 201);
+    } catch(error) {
+        if(error.isJoi === true) res.sendStatus(422);
+
+        res.sendStatus(500);
+    }; 
 });
 
-router.delete('/api/v1/auth/log-out', (req, res) => {
+router.delete('/api/v1/auth/log-out', async (req, res) => {
     bruteforce.prevent;
 
     if(!req.session.isLoggedIn && !req.cookies.token) return res.sendStatus(404);
 
-    if(req.session.isLoggedIn) req.session.destroy();
+    if(req.session) req.session.destroy();
 
-    if(req.cookies.token) res.clearCookie('token'); 
+    if(req.session.isLoggedIn) req.session.isLoggedIn = false;
 
-    res.sendStatus(200);
+    try {
+        const doesUserExist = await User.findOne(token);
+
+        if(doesUserExist) res.clearCookie('token');
+
+        res.sendStatus(200);
+    } catch(error) {
+        res.sendStatus(500);
+    };
 });
 
 module.exports = router;

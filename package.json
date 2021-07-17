@@ -18,6 +18,7 @@
     "express-brute": "^1.0.1",
     "express-brute-redis": "0.0.1",
     "express-session": "^1.17.2",
+    "joi": "^17.4.1",
     "milligram": "^1.4.1",
     "mongoose": "^5.12.13",
     "redis": "^3.1.2",
