@@ -11,8 +11,8 @@ module.exports = ({
 
         if(!token) return res.sendStatus(400);
     
-        const user = await User.findOne({ token }),
-              doesTokenExist = user.token ? true : false;
+        const user = await User.findOne({ token });
+              doesTokenExist = user?.token ? true : false;
     
         if(!doesTokenExist) return res.sendStatus(404);
         
