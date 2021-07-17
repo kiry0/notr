@@ -7,6 +7,7 @@ const redisClient = require('../lib/variables/redisClient.js');
     const msToSecs = require('../utils/msToSecs.js');
     /* */
 /* */
+
 module.exports = ({
     tokens,
     interval,
@@ -14,35 +15,35 @@ module.exports = ({
     message = 'Too many requests, please try again later.',
     statusCode = 429,
     setHeader = true,
-    requiredPermissionLevelToBypass = 5
+    permissionLevelRequiredToBypass = 5,
 } = {}) => {
     if(!tokens || tokens.toString().trim().length === 0) throw new TypeError('tokens cannot be null, undefined or empty!');
 
     if(!interval || interval.toString().trim().length === 0) throw new TypeError('interval cannot be null, undefined or empty!');
     
     return async(req, res, next) => {
-        const token = req.headers.authorization || req.session.token,
-              user = await User.findOne({ token });
+        const token = req.headers.authorization || req.session.token;
+        let userPermissionLevel = (await User.findOne({ token })).permissionLevel;
 
-        if(user.permissionLevel >= requiredPermissionLevelToBypass) return next();
-
-        redisClient.get(token, (err, u) => {
-            if(err) return console.error(err);
+        if(userPermissionLevel >= permissionLevelRequiredToBypass) return next();
+        
+        redisClient.get(token, (err, user) => {
+            if(err) return res.status(500).send(err);
     
-            if(!u) {
+            if(!user) {
                 const timestamp = Date.now(),
-                      user = {
-                        timestamp,
-                        tokens
-                      };
-    
-                u = JSON.stringify(user);
+                      IP = req.ip;
+                user = {
+                    timestamp,
+                    tokens,
+                    IP
+                };
 
-                redisClient.set(token, u);
+                redisClient.setex(token, seconds, JSON.stringify(user));
             };
-    
-            user = JSON.parse(u);
-                    
+
+            user = JSON.parse(user);
+
             // // Checks if the time difference has been >= interval.
             if(msToSecs(Date.now() - user.timestamp) >= interval) user.tokens = tokens;
             
@@ -54,11 +55,10 @@ module.exports = ({
             };
         
             user.tokens--;
+            
             user.timestamp = Date.now();
-    
-            redisClient.set(token, JSON.stringify(user));
-    
-            redisClient.expire(token, seconds);
+
+            redisClient.setex(token, seconds, JSON.stringify(user));
     
             next();
         });
