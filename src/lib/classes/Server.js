@@ -1,4 +1,4 @@
-/* DEPENDENCIES: */
+/* DEPENDENCIES */
 require('dotenv').config();
 const mongoose = require('mongoose'),
       express = require('express');
@@ -32,10 +32,8 @@ class Server {
                 
                 if(this.trustProxy) this.app.set('trust proxy', 1);
                 
-                /* Registers middlewares. */
                 require('../../config/middlewares.js')(this.app);
         
-                /* Registers routes. */
                 require('../../config/routes.js')(this.app);
 
                 this.app.listen(process.env.EXPRESS_SERVER_PORT);
@@ -43,7 +41,6 @@ class Server {
                 console.log('Successfully started the server!');
             } catch (err) {
                 throw new Error(`An error has occured, unable to start the server! => ${err}`);        
-            // eslint-disable-next-line no-extra-semi
             };
         }); 
     };  

@@ -1,4 +1,4 @@
-/* DEPENDENCIES: */
+/* DEPENDENCIES */
 const mongoose = require('mongoose');
 /* */
 

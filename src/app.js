@@ -1,4 +1,4 @@
-/* DEPENDENCIES: */
+/* DEPENDENCIES */
 const Server = require('./lib/classes/Server.js');
 /* */
 

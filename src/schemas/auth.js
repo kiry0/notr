@@ -1,4 +1,4 @@
-/* DEPENDENCIES: */
+/* DEPENDENCIES */
 const joi = require('joi');
 /* */
 

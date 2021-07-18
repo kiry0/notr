@@ -1,4 +1,4 @@
-/* DEPENDENCIES: */
+/* DEPENDENCIES */
 const redis = require('redis');
 require('dotenv').config();
 /* */

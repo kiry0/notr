@@ -4,7 +4,7 @@ const redisClient = require('../lib/variables/redisClient.js');
     const User = require('../models/User.js');
     /* */
     /* UTILS */
-    const msToSecs = require('../utils/msToSecs.js');
+    const msToSecs = require('../lib/utils/msToSecs.js');
     /* */
 /* */
 

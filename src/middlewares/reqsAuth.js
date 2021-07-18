@@ -1,5 +1,5 @@
-/* DEPENDENCIES: */
-    /* MODELS: */
+/* DEPENDENCIES */
+    /* MODELS */
     const User = require('../models/User.js');
     /* */
 /* */
