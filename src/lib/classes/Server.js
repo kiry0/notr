@@ -7,9 +7,11 @@ const mongoose = require('mongoose'),
 class Server {
     constructor({
         mongodbURI,
+        trustProxy = true
     }) {
         this.app = express();
         this.mongodbURI = mongodbURI;
+        this.trustProxy = trustProxy
     };
 
     start() {
@@ -27,6 +29,8 @@ class Server {
 
             try {
                 console.log('Attempting to start the server.....');
+                
+                if(this.trustProxy) this.app.set('trust proxy', 1);
                 
                 /* Registers middlewares. */
                 require('../../config/middlewares.js')(this.app);
