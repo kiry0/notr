@@ -111,9 +111,9 @@ router.delete('/api/v1/auth/log-out', async (req, res) => {
     if(req.session.isLoggedIn) req.session.isLoggedIn = false;
 
     try {
-        const doesUserExist = await User.findOne(token);
+        const isTokenValid = await User.findOne(token);
 
-        if(doesUserExist) res.clearCookie('token');
+        if(isTokenValid) res.clearCookie('token');
 
         res.sendStatus(200);
     } catch(error) {
