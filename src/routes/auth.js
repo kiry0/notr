@@ -1,14 +1,13 @@
-/* DEPENDENCIES: */
+/* DEPENDENCIES */
 const express = require('express'),
       router = express.Router(),
       bcrypt = require('bcrypt'),
       crypto = require('crypto'),
       RedisStore = require('express-brute-redis');
-    /* MODELS: */
-    // eslint-disable-next-line indent
+    /* MODELS */
     const User = require('../models/User.js');
     /* */
-    /* SCHEMAS: */
+    /* SCHEMAS */
     const { registrationSchema, logInSchema } = require('../schemas/auth.js');
     /* */
     /* MIDDLEWARES */
@@ -20,14 +19,16 @@ const express = require('express'),
         post: process.env.REDIS_STORE_PORT
     }),
     bruteforce = new ExpressBrute(store, {
-        freeRetries: 10,
-        minWait: 1*60*1000,
-        maxWait: 60*60*1000,
+        freeRetries: 100,
+        attachResetToRequest: false,
+        refreshTimeoutOnRequest: false,
+        minWait: 1000*60*60*24,
+        maxWait: 1000*60*60*24,
+        lifetime: 1000*60*60*24,
     });
     /* */
 /* */
 
-// TODO #1: replace ip-based rate limitting dependencies. 
 router.post('/api/v1/auth/register', async (req, res) => {
     bruteforce.prevent;
 
@@ -102,8 +103,6 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
 });
 
 router.delete('/api/v1/auth/log-out', async (req, res) => {
-    bruteforce.prevent;
-
     if(!req.session.isLoggedIn && !req.cookies.token) return res.sendStatus(404);
 
     if(req.session) req.session.destroy();
