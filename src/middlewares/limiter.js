@@ -1,25 +1,25 @@
-/* DEPENDENCIES: */
+/* DEPENDENCIES */
 const redisClient = require('../lib/variables/redisClient.js');
-    /* MODELS: */
+    /* MODELS */
     const User = require('../models/User.js');
     /* */
-    /* UTILS: */
+    /* UTILS */
     const msToSecs = require('../utils/msToSecs.js');
     /* */
 /* */
 
 module.exports = ({
     tokens,
-    interval,
+    duration,
     seconds = 60 * 60,
-    message = 'Too many requests, please try again later.',
+    errorMessage = 'Too many requests, please try again later.',
     statusCode = 429,
     setHeader = true,
     permissionLevelRequiredToBypass = 5,
 } = {}) => {
     if(!tokens || tokens.toString().trim().length === 0) throw new TypeError('tokens cannot be null, undefined or empty!');
 
-    if(!interval || interval.toString().trim().length === 0) throw new TypeError('interval cannot be null, undefined or empty!');
+    if(!duration || duration.toString().trim().length === 0) throw new TypeError('duration cannot be null, undefined or empty!');
     
     return async(req, res, next) => {
         const token = req.headers.authorization || req.session.token;
@@ -31,10 +31,10 @@ module.exports = ({
             if(err) return res.status(500).send(err);
     
             if(!user) {
-                const timestamp = Date.now(),
+                const ts = Date.now(),
                       IP = req.ip;
                 user = {
-                    timestamp,
+                    ts,
                     tokens,
                     IP
                 };
@@ -44,19 +44,17 @@ module.exports = ({
 
             user = JSON.parse(user);
 
-            // // Checks if the time difference has been >= interval.
-            if(msToSecs(Date.now() - user.timestamp) >= interval) user.tokens = tokens;
+            if(msToSecs(Date.now() - user.ts) >= duration) user.tokens = tokens;
             
-            // Checks if the user have enough tokens.
             if(user.tokens <= 0) {
-                if(setHeader) res.set('retry-after', `${interval - msToSecs(Date.now() - user.timestamp)} seconds.`);
+                if(setHeader) res.set('retry-after', `${duration - msToSecs(Date.now() - user.ts)} seconds.`);
 
-                return res.status(statusCode).send(message);
+                return res.status(statusCode).send(errorMessage);
             };
-        
+            
             user.tokens--;
             
-            user.timestamp = Date.now();
+            user.ts = Date.now();
 
             redisClient.setex(token, seconds, JSON.stringify(user));
     
