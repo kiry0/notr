@@ -8,7 +8,10 @@ const express = require('express'),
     const User = require('../models/User.js');
     /* */
     /* SCHEMAS */
-    const { registrationSchema, logInSchema } = require('../schemas/auth.js');
+    const { 
+        signUp,
+        logIn
+    } = require('../schemas/auth.js');
     /* */
     /* MIDDLEWARES */
     const ExpressBrute = require('express-brute');
@@ -29,23 +32,31 @@ const express = require('express'),
     /* */
 /* */
 
-router.post('/api/v1/auth/register', async (req, res) => {
+router.post('/api/v1/auth/sign-up', async (req, res) => {
     bruteforce.prevent;
 
     try {
-        await registrationSchema.validateAsync(req.body);
+        await signUp.validateAsync(req.body);
 
-        const { email, username, password } = req.body,
+        const { 
+            firstName,
+            lastName,
+            emailAddress,
+            username,
+            password
+        } = req.body,
         hashedPassword = await bcrypt.hash(password, 16),
-        doesUserExist = (await User.findOne({ $or:[{ email }, { username }]}))[0];
+        doesUserExist = await User.findOne({ $or:[{ emailAddress }, { username }]});
 
-        if(doesUserExist) return res.sendStatus(409);
+        if(doesUserExist) return res.status(409).send('A user with this emailAddress/username is already registered!');
 
         const token = crypto.randomBytes(128).toString('hex'),
               permissionLevel = 1;
         
         new User({
-            email,
+            firstName,
+            lastName,
+            emailAddress,
             username,
             password: hashedPassword,
             token,
@@ -60,9 +71,11 @@ router.post('/api/v1/auth/register', async (req, res) => {
             secure: true
         });
         
-        res.redirect('/', 201);
+        res.redirect(201, '/');
     } catch(error) {
-        if(error.isJoi === true) res.sendStatus(422);
+        if(error.isJoi === true) res.status(422).send('Invalid Form Body!');
+
+        console.error(error);
 
         res.sendStatus(500);
     };
@@ -72,11 +85,11 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
     bruteforce.prevent;
 
     try {
-        await logInSchema.validateAsync(req.body);
+        await logIn.validateAsync(req.body);
 
-        const { email, username, password } = req.body;
+        const { emailAddress, username, password } = req.body;
 
-        const user = (await User.find({ $or:[{ email }, { username }]}))[0];
+        const user = (await User.find({ $or:[{ emailAddress }, { username }]}))[0];
 
         if(!user) return res.sendStatus(404);
 
@@ -94,9 +107,11 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
             secure: true
         });
 
-        res.redirect('/', 201);
+        res.redirect(201, '/');
     } catch(error) {
-        if(error.isJoi === true) res.sendStatus(422);
+        if(error.isJoi === true) res.status(422).send('Invalid Form Body!');
+        
+        console.error(error);
 
         res.sendStatus(500);
     }; 
@@ -116,6 +131,8 @@ router.delete('/api/v1/auth/log-out', async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
+        console.error(error);
+
         res.sendStatus(500);
     };
 });
