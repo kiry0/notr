@@ -63,15 +63,19 @@ router.post('/api/v1/auth/sign-up', async (req, res) => {
             permissionLevel
         }).save();
 
-        req.session.isLoggedIn = true;
-        req.session.token = token;
-
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true
-        });
+        req.session.user = {
+            firstName,
+            lastName,
+            emailAddress,
+            username,
+            password: hashedPassword,
+            token,
+            permissionLevel,
+            isLoggedIn: true,
+        };
         
-        res.redirect(201, '/');
+        res.sendStatus(200);
+        // res.redirect(302, '/');
     } catch(error) {
         if(error.isJoi === true) res.status(422).send('Invalid Form Body!');
 
@@ -93,21 +97,30 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
 
         if(!user) return res.sendStatus(404);
 
+        const {
+            firstName,
+            lastName,
+            token,
+            permissionLevel,
+        } = user;
+
         const doesPasswordMatch = await bcrypt.compare(password, user.password) ? true : false;
         
         if(!doesPasswordMatch) return res.sendStatus(401);    
 
-        const { token } = user;
+        req.session.user = {
+            firstName,
+            lastName,
+            emailAddress: emailAddress || user.emailAddress,
+            username: username || user.username,
+            password,
+            token,
+            permissionLevel,
+            isLoggedIn: true,
+        };
 
-        req.session.isLoggedIn = true;
-        req.session.token = token;
-
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true
-        });
-
-        res.redirect(201, '/');
+        res.sendStatus(200);
+        // res.redirect(301, '/');
     } catch(error) {
         if(error.isJoi === true) res.status(422).send('Invalid Form Body!');
         
@@ -118,23 +131,11 @@ router.post('/api/v1/auth/log-in', async (req, res) => {
 });
 
 router.delete('/api/v1/auth/log-out', async (req, res) => {
-    if(!req.session.isLoggedIn && !req.cookies.token) return res.sendStatus(404);
+    if(!req.session.user) return res.sendStatus(404);
 
-    if(req.session) req.session.destroy();
+    req.session.destroy();
 
-    if(req.session.isLoggedIn) req.session.isLoggedIn = false;
-
-    try {
-        const isTokenValid = await User.findOne(token);
-
-        if(isTokenValid) res.clearCookie('token');
-
-        res.sendStatus(200);
-    } catch(error) {
-        console.error(error);
-
-        res.sendStatus(500);
-    };
+    res.sendStatus(200);
 });
 
 module.exports = router;
