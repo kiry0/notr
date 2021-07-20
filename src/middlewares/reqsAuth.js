@@ -7,7 +7,7 @@ module.exports = ({
     requiredPermissionLevel = 1
 } = {}) => {
     return async (req, res, next) => {
-        const token = req.headers.authorization || req.session.token;
+        const token = req.headers.authorization || req.session.user.token;
 
         if(!token) return res.sendStatus(400);
     
