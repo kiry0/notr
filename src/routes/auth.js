@@ -52,16 +52,17 @@ router.post('/api/v1/auth/sign-up', async (req, res) => {
 
         const token = crypto.randomBytes(128).toString('hex'),
               permissionLevel = 1;
-        
-        new User({
-            firstName,
-            lastName,
-            emailAddress,
-            username,
-            password: hashedPassword,
-            token,
-            permissionLevel
-        }).save();
+              user = new User({
+                firstName,
+                lastName,
+                emailAddress,
+                username,
+                password: hashedPassword,
+                token,
+                permissionLevel
+              });
+
+        user.save();
 
         req.session.user = {
             firstName,
