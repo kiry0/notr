@@ -48,7 +48,7 @@ router.post('/api/v1/auth/sign-up', async (req, res) => {
         hashedPassword = await bcrypt.hash(password, 16),
         doesUserExist = await User.findOne({ $or:[{ emailAddress }, { username }]});
 
-        if(doesUserExist) return res.status(409).send('A user with this emailAddress/username is already registered!');
+        if(doesUserExist) return res.status(409).send('A user with that emailAddress/username is already registered!');
 
         const token = crypto.randomBytes(128).toString('hex'),
               permissionLevel = 1;
