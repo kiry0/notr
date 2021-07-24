@@ -3,8 +3,7 @@
 require('dotenv').config();
 const express = require('express'),
       session = require('express-session'),
-      RedisStore = require('connect-redis')(session),
-      redisClient = require('../lib/variables/redisClient.js');
+      MongoStore = require('connect-mongo');
     /* MIDDLEWARES */
     const helmet = require('helmet'),
           json = require('express').json,
@@ -28,7 +27,9 @@ module.exports = (app) => {
            credentials: true
        }))
        .use(session({
-            store: new RedisStore({ client: redisClient }),
+            store: MongoStore.create({
+                mongoUrl: process.env.MONGODB_URI
+            }),
             secret: process.env.SESSION_SECRET,
             resave: false,
             saveUninitialized: false
